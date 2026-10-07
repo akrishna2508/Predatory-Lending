@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aegis
+      POSTGRES_USER: aegis_admin
+      POSTGRES_PASSWORD: ${AEGIS_ADMIN_DB_PASSWORD:?Set AEGIS_ADMIN_DB_PASSWORD in .env}
+      AEGIS_APP_DB_PASSWORD: ${AEGIS_APP_DB_PASSWORD:?Set AEGIS_APP_DB_PASSWORD in .env}
+      AEGIS_OPERATOR_DB_PASSWORD: ${AEGIS_OPERATOR_DB_PASSWORD:?Set AEGIS_OPERATOR_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - aegis-postgres:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegis_admin -d aegis"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://aegis_app:${AEGIS_APP_DB_PASSWORD:?Set AEGIS_APP_DB_PASSWORD in .env}@db:5432/aegis
+      DATABASE_SSL: "false"
+      DATABASE_POOL_MAX: 10
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  aegis-postgres:

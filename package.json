@@ -1,0 +1,52 @@
+{
+  "name": "aegis-platform",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && node scripts/prepare-standalone.mjs",
+    "start": "node scripts/start-local.mjs",
+    "test": "vitest run",
+    "db:migrate:local": "node scripts/migrate-local.mjs",
+    "provision:organization": "node scripts/provision-organization.mjs",
+    "provision:membership": "node scripts/provision-membership.mjs",
+    "membership:update": "node scripts/change-membership.mjs",
+    "db:backup:local": "node scripts/backup-local.mjs",
+    "db:restore:local": "node scripts/restore-local.mjs",
+    "db:prune-backups:local": "node scripts/prune-backups-local.mjs",
+    "db:verify-backup:local": "node scripts/verify-backup-restore.mjs",
+    "models:install": "python3 -m pip install -r requirements-modeling.txt",
+    "models:test": "python3 -m unittest discover -s tests/python -v",
+    "models:download:statlog": "python3 scripts/download_dataset.py",
+    "models:download:lendingclub": "node scripts/download_lendingclub.mjs",
+    "models:cfpb:download": "node scripts/download_cfpb_payday.mjs",
+    "models:cfpb:archive:download": "node scripts/download_cfpb_archive.mjs",
+    "models:train": "python3 scripts/train_baseline.py",
+    "models:cfpb": "python3 scripts/analyze_cfpb.py",
+    "models:simulate": "python3 scripts/run_simulation.py",
+    "models:benchmark:generators": "python3 scripts/benchmark_public_generators.py",
+    "demo:csv": "node scripts/create_demo_transactions.mjs"
+  },
+  "dependencies": {
+    "next": "^15.5.26",
+    "pg": "^8.23.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "@types/pg": "^8.23.1",
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "typescript": "5.7.2",
+    "vite": "^8.3.1",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "postcss": "8.5.28"
+  },
+  "engines": {
+    "node": ">=22.12.0 <23"
+  }
+}
